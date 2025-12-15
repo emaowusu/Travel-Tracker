@@ -19,3 +19,6 @@ build/
 
 Dockerfiles/*
 .git
+
+.gitignore
+Dockerfiles

@@ -4,6 +4,7 @@ services:
       context: ./Dockerfiles/db
     image: emacodes/trackerdb:latest
     container_name: trackerdb
+    restart: unless-stopped
     env_file:
       - .env
     environment:
@@ -13,9 +14,14 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - trackerdbdata:/var/lib/postgresql/data
     networks:
       - backend  
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   trackerapp:
     build:
@@ -23,15 +29,18 @@ services:
       dockerfile: Dockerfiles/app/Dockerfile
     image: emacodes/trackerapp:latest
     container_name: trackerapp
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env
     environment:
+      GITHUB_REPO: "https://github.com/emaowusu/Travel-Tracker.git"
+      GITHUB_BRANCH: "main"
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
+      NODE_ENV: ${NODE_ENV}
     ports:
       - "3000:3000"
     depends_on:
@@ -39,8 +48,20 @@ services:
     networks:
       - backend
 
+  nginx:
+    build:
+      context: ./Dockerfiles/web
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - trackerapp
+    networks:
+      - backend
+
 volumes:
-  pgdata:
+  trackerdbdata:
 
 networks:
   backend:
