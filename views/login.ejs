@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="/styles/auth.css">
+</head>
+<body>
+  <div class="container">
+    <div class="auth-card">
+      <h2>Login</h2>
+
+      <% if (error) { %>
+        <div class="error-message"><%= error %></div>
+      <% } %>
+
+      <form method="POST">
+        <input name="username" type="text" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button>Login</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
