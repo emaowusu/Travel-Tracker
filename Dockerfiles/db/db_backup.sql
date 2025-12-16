@@ -10,6 +10,17 @@ END
 $$;
 
 
+CREATE TABLE "session" (
+  "sid" varchar NOT NULL COLLATE "default",
+  "sess" json NOT NULL,
+  "expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid");
+
+
+
 CREATE TABLE countries (
   id INT PRIMARY KEY,
   country_code VARCHAR(2) UNIQUE,

@@ -4,7 +4,7 @@ services:
       context: ./Dockerfiles/db
     image: emacodes/trackerdb:latest
     container_name: trackerdb
-    restart: unless-stopped
+    restart: always
     env_file:
       - .env
     environment:
@@ -29,17 +29,15 @@ services:
       dockerfile: Dockerfiles/app/Dockerfile
     image: emacodes/trackerapp:latest
     container_name: trackerapp
-    restart: unless-stopped
+    restart: always
     env_file:
       - .env
     environment:
-      GITHUB_REPO: "https://github.com/emaowusu/Travel-Tracker.git"
-      GITHUB_BRANCH: "main"
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
       NODE_ENV: ${NODE_ENV}
     ports:
       - "3000:3000"
@@ -48,11 +46,12 @@ services:
     networks:
       - backend
 
-  nginx:
+  trackerweb:
     build:
       context: ./Dockerfiles/web
+    image: emacodes/trackerweb:latest
     container_name: nginx
-    restart: unless-stopped
+    restart: always
     ports:
       - "80:80"
     depends_on:

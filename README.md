@@ -13,11 +13,37 @@ SERVER_PORT=3000
 APP_USERNAME=admin
 APP_PASSWORD=secret123
 
+DATABASE_URL=postgres://postgres:098765432@127.0.0.1:5432/world
 DB_HOST=trackerdb
 DB_PORT=5432
 DB_USER=tracker_user
 DB_PASSWORD=StrongPassword123!
 DB_NAME=world
+NODE_ENV=production
+SESSION_SECRET=your_generated_secret_key
+
+```
+
+# You can use one of the following to generate the SESSION_SECRET
+
+# Using OpenSSL CLI
+
+```bash
+openssl rand -hex 64
+```
+
+```bash
+openssl rand -base64 32
+```
+
+# Using Node.js CLI
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'));"
+```
+
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
 ## BUILD AND RUN THE CONTAINER

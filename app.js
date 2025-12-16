@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import pg from "pg";
 import dotenv from "dotenv";
 import session from "express-session";
+import connectPgSimple from 'connect-pg-simple';
 
 dotenv.config();
 
@@ -15,26 +16,35 @@ app.use(express.static("public"));
 
 /* -------------------- DATABASE -------------------- */
 const pool = new pg.Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT),
+  user: process.env.DATABASE_USER,
+  host: process.env.DATABASE_HOST,
+  database: process.env.DATABASE_NAME,
+  password: process.env.DATABASE_PASSWORD,
+  port: Number(process.env.DATABASE_PORT),
 });
 
 /* -------------------- SESSION -------------------- */
-// app.use(session({
-//   secret: process.env.SESSION_SECRET,
-//   resave: false,
-//   saveUninitialized: false,
-// }));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || "myDefaultSecret",
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 3600000 } // optional, 1 hour
-}));
+// Initialize PostgreSQL session store
+const pgSession = connectPgSimple(session);
+
+app.use(
+  session({
+    store: new pgSession({
+      pool: new pg.Pool({
+        connectionString: process.env.DATABASE_URL,
+      }),
+      tableName: 'session', // optional, default is 'session'
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    },
+  })
+);
+
 
 /* -------------------- APP STATE -------------------- */
 let currentUserId = 1;
@@ -73,6 +83,7 @@ async function getCurrentUser(userId = currentUserId, dbPool = pool) {
 app.get("/login", (req, res) => {
   res.render("login.ejs", { error: null });
 });
+
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
