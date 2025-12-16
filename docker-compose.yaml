@@ -50,7 +50,7 @@ services:
     build:
       context: ./Dockerfiles/web
     image: emacodes/trackerweb:latest
-    container_name: nginx
+    container_name: trackerweb
     restart: always
     ports:
       - "80:80"
