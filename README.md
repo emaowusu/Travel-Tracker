@@ -64,7 +64,7 @@ docker compose --env-file .env up -d --build
 ### Access the application through
 
 ```bash
-https://127.0.0.1:3000
+http://127.0.0.1:3000
 ```
 
 
@@ -85,7 +85,12 @@ docker logs <container_id>
 # Access the container shell
 
 ```bash
-docker exec -it <app_container> bash
+docker exec -it <container-ID> bash
+```
+### OR
+
+```bash
+docker exec -it <container-ID> sh
 ```
 
 ## ACCESS THE DATABASE
