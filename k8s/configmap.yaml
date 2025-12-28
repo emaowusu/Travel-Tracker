@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tracker-config
+data:
+  SERVER_PORT: "3000"
+  NODE_ENV: "production"
+  DB_HOST: trackerdb
+  DB_PORT: "5432"
+  DB_NAME: world
+  DB_USER: tracker_user
+  LOGIN_USERNAME: admin
+  LOGIN_PASSWORD: secret123

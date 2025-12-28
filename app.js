@@ -8,7 +8,7 @@ import connectPgSimple from 'connect-pg-simple';
 dotenv.config();
 
 const app = express();
-const port = process.env.SERVER_PORT || 3000;
+const port = process.env.SERVER_PORT;
 
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,11 +16,11 @@ app.use(express.static("public"));
 
 /* -------------------- DATABASE -------------------- */
 const pool = new pg.Pool({
-  user: process.env.DATABASE_USER,
-  host: process.env.DATABASE_HOST,
-  database: process.env.DATABASE_NAME,
-  password: process.env.DATABASE_PASSWORD,
-  port: Number(process.env.DATABASE_PORT),
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: Number(process.env.DB_PORT),
 });
 
 /* -------------------- SESSION -------------------- */
@@ -32,9 +32,9 @@ app.use(
   session({
     store: new pgSession({
       pool: new pg.Pool({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: process.env.DB_URL,
       }),
-      tableName: 'session', // optional, default is 'session'
+      tableName: 'session', 
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -89,8 +89,8 @@ app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
   if (
-    username === process.env.APP_USERNAME &&
-    password === process.env.APP_PASSWORD
+    username === process.env.LOGIN_USERNAME &&
+    password === process.env.LOGIN_PASSWORD
   ) {
     req.session.isAuthenticated = true;
     return res.redirect("/");

@@ -2,7 +2,7 @@ services:
   trackerdb:
     build:
       context: ./Dockerfiles/db
-    image: emacodes/trackerdb:latest
+    image: emacodes/trackerdb:v1.0.0
     container_name: trackerdb
     restart: always
     env_file:
@@ -14,7 +14,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - trackerdbdata:/var/lib/postgresql/data
+      - trackerdb-data:/var/lib/postgresql/data
     networks:
       - backend  
     healthcheck:
@@ -27,17 +27,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfiles/app/Dockerfile
-    image: emacodes/trackerapp:latest
+    image: emacodes/trackerapp:v1.0.0
     container_name: trackerapp
     restart: always
     env_file:
       - .env
     environment:
-      DATABASE_HOST: ${DATABASE_HOST}
-      DATABASE_PORT: ${DATABASE_PORT}
-      DATABASE_USER: ${DATABASE_USER}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_NAME: ${DATABASE_NAME}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
       NODE_ENV: ${NODE_ENV}
     ports:
       - "3000:3000"
@@ -49,7 +49,7 @@ services:
   trackerweb:
     build:
       context: ./Dockerfiles/web
-    image: emacodes/trackerweb:latest
+    image: emacodes/trackerweb:v1.0.0
     container_name: trackerweb
     restart: always
     ports:
@@ -60,7 +60,7 @@ services:
       - backend
 
 volumes:
-  trackerdbdata:
+  trackerdb-data:
 
 networks:
   backend:

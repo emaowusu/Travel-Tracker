@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:1.29-alpine
 
 LABEL org.opencontainers.image.title="Travel-Tracker"
 LABEL org.opencontainers.image.authors="Owusu"

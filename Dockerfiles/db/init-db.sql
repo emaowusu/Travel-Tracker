@@ -1,46 +1,50 @@
-DO
-$$
+DO $$
 BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_catalog.pg_roles WHERE rolname = 'tracker_user'
-   ) THEN
-      CREATE ROLE tracker_user WITH LOGIN PASSWORD 'StrongPassword123!';
-   END IF;
+    IF NOT EXISTS (
+        SELECT FROM pg_roles WHERE rolname = 'tracker_user'
+    ) THEN
+        CREATE USER tracker_user WITH PASSWORD 'StrongPassword123';
+    END IF;
 END
 $$;
 
+-- Grant privileges on database
 
-CREATE TABLE "session" (
-  "sid" varchar NOT NULL COLLATE "default",
-  "sess" json NOT NULL,
-  "expire" timestamp(6) NOT NULL
-)
-WITH (OIDS=FALSE);
-
-ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid");
+GRANT ALL PRIVILEGES ON DATABASE world TO tracker_user;
 
 
+-- Create tables
 
-CREATE TABLE countries (
-  id INT PRIMARY KEY,
-  country_code VARCHAR(2) UNIQUE,
-  country_name TEXT
+-- Session table
+CREATE TABLE IF NOT EXISTS "session" (
+    "sid" VARCHAR NOT NULL COLLATE "default",
+    "sess" JSON NOT NULL,
+    "expire" TIMESTAMP(6) NOT NULL,
+    CONSTRAINT "session_pkey" PRIMARY KEY ("sid")
+) WITH (OIDS=FALSE);
+
+
+-- Countries table
+CREATE TABLE IF NOT EXISTS countries (
+    id INT PRIMARY KEY,
+    country_code VARCHAR(2) UNIQUE,
+    country_name TEXT
 );
 
-DROP TABLE IF EXISTS visited_countries, users;
-
-CREATE TABLE users(
-id SERIAL PRIMARY KEY,
-name VARCHAR(15) UNIQUE NOT NULL,
-color VARCHAR(15)
+-- Users table
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(15) UNIQUE NOT NULL,
+    color VARCHAR(15)
 );
 
-
-CREATE TABLE visited_countries(
-id SERIAL PRIMARY KEY,
-country_code CHAR(2) NOT NULL,
-user_id INTEGER REFERENCES users(id)
+-- Visited countries table
+CREATE TABLE IF NOT EXISTS visited_countries (
+    id SERIAL PRIMARY KEY,
+    country_code CHAR(2) NOT NULL,
+    user_id INTEGER REFERENCES users(id)
 );
+
 
 INSERT INTO users (name, color)
 VALUES ('Dennis', 'teal'), ('Sam', 'powderblue');
@@ -301,4 +305,9 @@ INSERT INTO countries (id, country_code, country_name) VALUES
 (244, 'EH', 'Western Sahara'),
 (245, 'YE', 'Yemen'),
 (246, 'ZM', 'Zambia'),
-(247, 'ZW', 'Zimbabwe');
+(247, 'ZW', 'Zimbabwe')
+
+ON CONFLICT (id) DO NOTHING;
+
+
+
