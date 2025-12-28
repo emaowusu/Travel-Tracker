@@ -1,6 +1,10 @@
 
 # Node.js + PostgreSQL Application  
-***Docker Compose & Kubernetes (Minikube)***
+## *Using Docker Compose, Kubernetes & Minikube*
+
+## Architectural Diagram
+
+![Application](./images/Architecture%20Diagram.png)
 
 ## 📌 Project Description
 
@@ -312,7 +316,6 @@ kubectl get events --sort-by=.metadata.creationTimestamp
 kubectl exec -it <pod-name> -- env | grep <envVariableName>
 ```
 
----
 
 ## Clean Up Kubernetes Resources
 
